@@ -5,6 +5,8 @@ class MainHandler(tornado.web.RequestHandler):
 
     def get(self):
         self.write("lmao")
+        #self.finish()
+        #self.redirect()
 
     '''
     def post(self, msg):
