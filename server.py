@@ -2,17 +2,33 @@ import tornado.ioloop
 import tornado.web
 
 class MainHandler(tornado.web.RequestHandler):
-    def get(self,asdfghjk):
-        self.write("fjfjff")
-    # def post(self, asdfghjk):
-    #     print(asdfghjk)
-    #     print(self.request)
-    #     print(self.request.body)
-    #     self.write({"fg":9})
+
+    def get(self):
+        self.write("lmao")
+
+    '''
+    def post(self, msg):
+        print(msg)
+        print(self.request)
+        print(self.request.body)
+        self.write({"name":"John Dean"})
+    '''
+
+class CreatePartyHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        self.write("Create PARTY!!")
+
+class JoinPartyHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        self.write("Join PARTY!!")
 
 def make_app():
     return tornado.web.Application([
-        (r"/(.*)", MainHandler),
+        (r"/", MainHandler),
+        (r"/hostparty", CreatePartyHandler),
+        (r"/joinparty", JoinPartyHandler)
     ])
 
 if __name__ == "__main__":
