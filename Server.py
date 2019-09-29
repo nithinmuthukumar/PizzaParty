@@ -18,9 +18,8 @@ class MainHandler(tornado.web.RequestHandler):
 
 class HostPartyHandler(tornado.web.RequestHandler):
 
-    def get(self):
-        args = self.get_body_argument("name")
-        print(args)
+    def post(self):
+        print(self.request.body)
 
 class JoinPartyHandler(tornado.web.RequestHandler):
 
