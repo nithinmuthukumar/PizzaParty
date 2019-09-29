@@ -44,7 +44,7 @@ class Party:
 
     @staticmethod
     def create_new_pizza(party_name,pizza_id): #creates new pizza if name does not exist
-        new_pizza = {"pizza_id":pizza_id,"toppings":[]}
+        new_pizza = {"pizza_id":pizza_id,"toppings":[],"slices":8}
         Party.parties_collect.find_one_and_update({"party_name":party_name},{"$push":{"pizzas":new_pizza}},upsert=False)
 
     @staticmethod
@@ -54,6 +54,15 @@ class Party:
     @staticmethod
     def remove_topping(party_name,pizza_id,topping):
         Party.parties_collect.find_one_and_update({"party_name":party_name,"pizzas.pizza_id":pizza_id},{"$pull":{"pizzas.$.toppings":topping}})
+
+    @staticmethod
+    def init_whole_pizza(party_name,pizza_data):
+        Party.parties_collect.find_one_and_update({"party_name":party_name},{"$push":{"pizzas":pizza_data}},upsert=False)
+
+    @staticmethod
+    def place_order(party_name,store_location):
+        pass
+
 
 #pprint(accounts)
 #db = Party()

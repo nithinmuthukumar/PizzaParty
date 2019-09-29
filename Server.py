@@ -10,24 +10,6 @@ class MainHandler(tornado.web.RequestHandler):
         #self.finish()
         #self.redirect()
 
-    '''
-    def post(self, msg):
-        print(msg)
-        print(self.request)
-        print(self.request.body)
-        self.write({"name":"John Dean"})
-    '''
-
-class HostPartyHandler(tornado.web.RequestHandler):
-
-    def post(self):
-        print(self.request.body)
-
-class JoinPartyHandler(tornado.web.RequestHandler):
-
-    def get(self):
-        self.write("Join PARTY!!")
-
 class CommandHandler(tornado.web.RequestHandler):
 
     def post(self):
@@ -35,15 +17,13 @@ class CommandHandler(tornado.web.RequestHandler):
         func_name = cmd_json["command"]
         params = cmd_json["params"]
 
-        #execvute command 
+        #execvute command
         assert hasattr(Party,func_name), "invalid command"
-        print(getattr(Party,func_name)(*params))
+        getattr(Party,func_name)(*params) #return result to front-end
 
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
-        (r"/hostparty", HostPartyHandler),
-        (r"/joinparty", JoinPartyHandler),
         (r"/command", CommandHandler),
     ])
 

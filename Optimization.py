@@ -3,7 +3,6 @@ from math import *
 # CONSTANTS
 toppings = [line.strip() for line in open("data/toppings.txt").readlines()]
 
-
 class Person:
     def __init__(self, is_veg, toppings):
         self.is_veg = is_veg
