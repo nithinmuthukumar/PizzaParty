@@ -5,6 +5,8 @@ class MainHandler(tornado.web.RequestHandler):
 
     def get(self):
         self.write("lmao")
+        #self.finish()
+        #self.redirect()
 
     '''
     def post(self, msg):
@@ -14,10 +16,11 @@ class MainHandler(tornado.web.RequestHandler):
         self.write({"name":"John Dean"})
     '''
 
-class CreatePartyHandler(tornado.web.RequestHandler):
+class HostPartyHandler(tornado.web.RequestHandler):
 
     def get(self):
-        self.write("Create PARTY!!")
+        args = self.get_body_argument("name")
+        print(args)
 
 class JoinPartyHandler(tornado.web.RequestHandler):
 
@@ -27,7 +30,7 @@ class JoinPartyHandler(tornado.web.RequestHandler):
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
-        (r"/hostparty", CreatePartyHandler),
+        (r"/hostparty", HostPartyHandler),
         (r"/joinparty", JoinPartyHandler)
     ])
 
