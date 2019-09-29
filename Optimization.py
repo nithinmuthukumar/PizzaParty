@@ -10,10 +10,20 @@ meaties = ["PEPPERONI",
 "HAM"]
 
 class Person:
-    def __init__(self, is_veg, toppings):
+    def __init__(self, toppings):
         visited = False
         self.toppings = toppings
-        self.is_veg = is_veg
+        for t in toppings:
+            if meaties.count(t) > 0:
+                self.is_veg = False
+                visited = True
+                break
+        if not visited:
+            self.is_veg = False
+            #################################################################MCDONALDS COUPON CANADA FOR 2ND BIG MAC FREE IS 320161555
+        
+                
+        
         
 #DOES NOT VERIFY MEAT VS VEGETARIAN
 def optimize_pizzas_A(people,slices):
@@ -112,7 +122,7 @@ def optimize_pizzas_A(people,slices):
 
 
 #############################################
-
+    MEATERS = len(pizza_set)
     inc = 0
     for i in meat_num:
         if i*slices % 8 == 0 and i*slices >= 8:
@@ -139,7 +149,7 @@ def optimize_pizzas_A(people,slices):
         if i*meat_num == 4:
             if len(pizza_set) > 0:
                 indx = meat_num.index(i)
-                if len(pizza_set[-1]) == 1:
+                if len(pizza_set[-1]) == 1 and len(pizza_set) > MEATERS:
                     pizza_set[-1].append(meat_pizzas[indx])
                 else:
                     pizza_set.append([meat_pizzas[indx]])
@@ -150,7 +160,7 @@ def optimize_pizzas_A(people,slices):
             pizza_set[-1].append(4)
                     
     for i in range(len(meat_num)):
-        if pizza_set[-1][1] == ['']:
+        if pizza_set[-1][1] == [''] and len(pizza_set) > MEATERS:
             pizza_set[-1][1] = [meat_pizzas[i]]
             pizza_set[-1][2] = 8
         else:
@@ -167,11 +177,11 @@ def optimize_pizzas_A(people,slices):
     return pizza_set
 
 
-x = Person(True,["olives"])
-y = Person(True,["olives"])
-z = Person(False,["pepperoni"])
-a = Person(False,["vegetables,pepperoni"])
-b = Person(False,["pepperoni","olives"])
+x = Person(["olives"])
+y = Person(["olives"])
+z = Person(["pepperoni"])
+a = Person(["vegetables,pepperoni"])
+b = Person(["pepperoni","olives"])
 lst = [x,y,z,a,b]
 
 print(optimize_pizzas_A(lst,4))
