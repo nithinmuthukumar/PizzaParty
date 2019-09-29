@@ -2,17 +2,23 @@ from math import *
 
 # CONSTANTS
 toppings = [line.strip() for line in open("data/toppings.txt").readlines()]
+meaties = ["PEPPERONI",
+"EXTRA PEPPERONI",
+"SAUSAGE",
+"BACON",
+"BEEF",
+"HAM"]
 
 class Person:
     def __init__(self, is_veg, toppings):
-        self.is_veg = is_veg
+        visited = False
         self.toppings = toppings
+        self.is_veg = is_veg
         
 #DOES NOT VERIFY MEAT VS VEGETARIAN
 def optimize_pizzas_A(people,slices):
     round_pizza_slices = 0
     build_pizza_slices = 0
-    #deep_dish_slices = 0
     veg_pizzas_num = 0
     meat_pizzas_num = 0
     veg_pizzas = []
@@ -49,85 +55,123 @@ def optimize_pizzas_A(people,slices):
         x = i % 8
         if x > 4:
             i += 8-x
-            
+    
     pizza_set = []
-    pizza_set2 = []
-    pizza_loose = []
+    deletions = []
+    inc = 0
     for i in veg_num:
         if i*slices % 8 == 0 and i*slices >= 8:
-            indx = veg_num.index(i)
+            indx = inc
             for i in range(int(i*slices/8)):
-                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx]])
-            del veg_num[indx]
-            del veg_pizzas[indx]
+                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx],8])
+            deletions.append(indx)
             
         elif i*slices > 8:
             add_num = floor(i*slices/8)
-            indx = veg_num.index(i)
+            indx = inc
             for i in range(add_num):
-                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx]])
+                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx],8])
             veg_num[indx] -= add_num*8
+        inc += 1
+    for i in range(len(deletions)):
+        del veg_num[deletions[i]-i]
+        del veg_pizzas[deletions[i]-i]
+    
+    deletions = []
+    
     for i in veg_num:
         if i*veg_num == 4:
             if len(pizza_set) > 0:
                 indx = veg_num.index(i)
                 if len(pizza_set[-1]) == 1:
-                    pizza_set[-1].append(veg_pizzas[indx])
+                    pizza_set[-1].append(veg_pizzas[indx],8)
                 else:
                     pizza_set.append([veg_pizzas[indx]])
-    if len(veg_pizzas) > 0:
-        if len(veg_pizzas[-1]) == 2:
-            veg_pizzas[-1].append(veg_pizzas[-1][0])
+    
+    if len(pizza_set) > 0:
+        if len(pizza_set[-1]) == 1:
+            pizza_set[-1].append([""])
+            pizza_set[-1].append(4)
+    
+    
+    print(veg_pizzas)
     for i in range(len(veg_num)):
-        lst = veg_pizzas[i]
-        lst.append(veg_num[i]*slices)
-        pizza_loose.append(lst)
+        if pizza_set[-1][1] == ['']:
+            pizza_set[-1][1] = [veg_pizzas[i]]
+            pizza_set[-1][2] = 8
+        else:
+            lst = [veg_pizzas[i]]
+            lst.append([''])
+            if veg_num[i]*slices <= 4:
+                lst.append(4)
+            else:
+                lst[1] = lst[0]
+                lst.append(8)
+            pizza_set.append(lst)
+    
 
 
+#############################################
 
+    inc = 0
     for i in meat_num:
         if i*slices % 8 == 0 and i*slices >= 8:
-            indx = meat_num.index(i)
+            indx = inc
             for i in range(int(i*slices/8)):
-                pizza_set2.append([meat_pizzas[indx],meat_pizzas[indx]])
-            del meat_num[indx]
-            del meat_pizzas[indx]
+                pizza_set.append([meat_pizzas[indx],meat_pizzas[indx],8])
+            deletions.append(indx)
+            
             
         elif i*slices > 8:
             add_num = floor(i*slices/8)
             indx = meat_num.index(i)
             for i in range(add_num):
-                pizza_set2.append([meat_pizzas[indx],meat_pizzas[indx]])
+                pizza_set.append([meat_pizzas[indx],meat_pizzas[indx],8])
             meat_num[indx] -= add_num*8
+        inc += 1
+    for i in range(len(deletions)):
+        del meat_num[deletions[i]-i]
+        del meat_pizzas[deletions[i]-i]
+    
+    deletions = []
+    
     for i in meat_num:
         if i*meat_num == 4:
-            if len(pizza_set2) > 0:
+            if len(pizza_set) > 0:
                 indx = meat_num.index(i)
-                if len(pizza_set2[-1]) == 1:
-                    pizza_set2[-1].append(meat_pizzas[indx])
+                if len(pizza_set[-1]) == 1:
+                    pizza_set[-1].append(meat_pizzas[indx])
                 else:
-                    pizza_set2.append([meat_pizzas[indx]])
-    if len(meat_pizzas) > 0:
-        if len(meat_pizzas[-1]) == 2:
-            meat_pizzas[-1].append(meat_pizzas[-1][0])
+                    pizza_set.append([meat_pizzas[indx]])
+    
+    if len(pizza_set) > 0:
+        if len(pizza_set[-1]) == 1:
+            pizza_set[-1].append([""])
+            pizza_set[-1].append(4)
+                    
     for i in range(len(meat_num)):
-        lst = meat_pizzas[i]
-        lst.append(meat_num[i]*slices)
-        pizza_loose.append(lst)
+        if pizza_set[-1][1] == ['']:
+            pizza_set[-1][1] = [meat_pizzas[i]]
+            pizza_set[-1][2] = 8
+        else:
+            lst = [meat_pizzas[i]]
+            lst.append([''])
+            if meat_num[i]*slices <= 4:
+                lst.append(4)
+            else:
+                lst[1] = lst[0]
+                lst.append(8)
+            pizza_set.append(lst)
+        
 
-    return [pizza_set,pizza_set2,pizza_loose]
+    return pizza_set
 
 
 x = Person(True,["olives"])
 y = Person(True,["olives"])
 z = Person(False,["pepperoni"])
-a = Person(False,["pepperoni"])
+a = Person(False,["vegetables,pepperoni"])
 b = Person(False,["pepperoni","olives"])
 lst = [x,y,z,a,b]
-
-
-#add slice number
-#compress down to 2d array
-
 
 print(optimize_pizzas_A(lst,4))
