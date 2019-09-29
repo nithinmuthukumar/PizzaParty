@@ -11,15 +11,16 @@ meaties = ["PEPPERONI",
 
 class Person:
     def __init__(self, toppings):
-        visited = False
+        v2 = False
         self.toppings = toppings
         for t in toppings:
-            if meaties.count(t) > 0:
+            if meaties.count(t.upper()) > 0:
                 self.is_veg = False
-                visited = True
+                v2 = True
                 break
-        if not visited:
-            self.is_veg = False
+        if not v2:
+            self.is_veg = True
+            
             #################################################################MCDONALDS COUPON CANADA FOR 2ND BIG MAC FREE IS 320161555
         
                 
@@ -57,6 +58,7 @@ def optimize_pizzas_A(people,slices):
             if not visited:
                 meat_pizzas.append(p.toppings)
                 meat_num.append(1)
+    
     for i in veg_num:
         x = i % 8
         if x > 4:
@@ -65,7 +67,8 @@ def optimize_pizzas_A(people,slices):
         x = i % 8
         if x > 4:
             i += 8-x
-    
+    #print(veg_pizzas)
+    #print(meat_pizzas)
     pizza_set = []
     deletions = []
     inc = 0
@@ -103,12 +106,20 @@ def optimize_pizzas_A(people,slices):
             pizza_set[-1].append([""])
             pizza_set[-1].append(4)
     
-    
-    print(veg_pizzas)
     for i in range(len(veg_num)):
-        if pizza_set[-1][1] == ['']:
-            pizza_set[-1][1] = [veg_pizzas[i]]
-            pizza_set[-1][2] = 8
+        if len(pizza_set) > 0:
+            if pizza_set[-1][1] == ['']:
+                pizza_set[-1][1] = [veg_pizzas[i]]
+                pizza_set[-1][2] = 8
+            else:
+                lst = [veg_pizzas[i]]
+                lst.append([''])
+                if veg_num[i]*slices <= 4:
+                    lst.append(4)
+                else:
+                    lst[1] = lst[0]
+                    lst.append(8)
+                pizza_set.append(lst)
         else:
             lst = [veg_pizzas[i]]
             lst.append([''])
@@ -160,9 +171,20 @@ def optimize_pizzas_A(people,slices):
             pizza_set[-1].append(4)
                     
     for i in range(len(meat_num)):
-        if pizza_set[-1][1] == [''] and len(pizza_set) > MEATERS:
-            pizza_set[-1][1] = [meat_pizzas[i]]
-            pizza_set[-1][2] = 8
+        print(pizza_set)
+        if len(pizza_set) > 0:
+            if pizza_set[-1][1] == [''] and len(pizza_set) > MEATERS:
+                pizza_set[-1][1] = [meat_pizzas[i]]
+                pizza_set[-1][2] = 8
+            else:
+                lst = [meat_pizzas[i]]
+                lst.append([''])
+                if meat_num[i]*slices <= 4:
+                    lst.append(4)
+                else:
+                    lst[1] = lst[0]
+                    lst.append(8)
+                pizza_set.append(lst)
         else:
             lst = [meat_pizzas[i]]
             lst.append([''])
@@ -177,11 +199,8 @@ def optimize_pizzas_A(people,slices):
     return pizza_set
 
 
-x = Person(["olives"])
-y = Person(["olives"])
-z = Person(["pepperoni"])
-a = Person(["vegetables,pepperoni"])
-b = Person(["pepperoni","olives"])
-lst = [x,y,z,a,b]
+x = Person(['onions'])
+y = Person(['mushrooms'])
+lst = [x,y]
 
-print(optimize_pizzas_A(lst,4))
+print(optimize_pizzas_A(lst,2))
