@@ -1,5 +1,6 @@
 import config
 import pymongo
+import Optimization
 from pprint import *
 
 class Party:
@@ -34,7 +35,7 @@ class Party:
 
     @staticmethod
     def add_member(party_name,new_member):
-        #A member object looks like {"name":name,"topping_choice":[]}
+        #member comes in the form {"name::name,"toppings":[]}
         Party.parties_collect.find_one_and_update({"party_name":party_name},{"$push":{"members":new_member}},upsert=False)
 
     @staticmethod
@@ -70,7 +71,12 @@ class Party:
 
     @staticmethod
     def compute_optimal_pizza(party_name):
-        pass
+        peoples = []
+        for p in Party.parties_collect["members"]:
+            person = Optimization.Person(p["toppings"])
+
+        Optimization.optimize_pizzas_A(peoples,2) #hardcoded for two slices
+
 
     #host pizza stuff
     @staticmethod
@@ -85,7 +91,9 @@ class Party:
     def get_pizza_prefab_list(party_name):
         return Party.parties_collect.find_one({"party_name": party_name})["pizza_prefabs"]
 
-
+    @staticmethod
+    def add_user_pizza(party_name,topping):
+        pass
 
 
 #pprint(accounts)
