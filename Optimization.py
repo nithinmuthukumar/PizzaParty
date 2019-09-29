@@ -1,7 +1,7 @@
 from math import *
 
 # CONSTANTS
-toppings = [line.strip() for line in open("data/toppings.txt").readlines()]
+toppings = [line.strip() for line in open("toppings.txt").readlines()]
 meaties = ["PEPPERONI",
 "EXTRA PEPPERONI",
 "SAUSAGE",

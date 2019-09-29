@@ -27,7 +27,7 @@ class Party:
     def create_new_party(new_party_name,pizza_list):
         Party.parties_collect.insert_one({"party_name":new_party_name,"members":[],"pizza_prefabs":[],"pizzas":[]})
         for prefab in pizza_list:
-            Party.add_pizza_prefab(prefab)
+            Party.add_pizza_prefab(new_party_name,prefab)
 
     @staticmethod
     def delete_party(party_name):
@@ -71,17 +71,18 @@ class Party:
 
     @staticmethod
     def compute_optimal_pizza(party_name):
+        
         peoples = []
-        for p in Party.parties_collect["members"]:
-            person = Optimization.Person(p["toppings"])
+        for p in Party.parties_collect.find_one({"party_name":party_name})["members"]:
+            print(p["toppings"])
+            peoples.append(Optimization.Person(p["toppings"]))
 
-        Optimization.optimize_pizzas_A(peoples,2) #hardcoded for two slices
-
+        return Optimization.optimize_pizzas_A(peoples,2) #hardcoded for two slices
 
     #host pizza stuff
     @staticmethod
     def add_pizza_prefab(party_name,pizza_prefab):
-        Party.parties_collect.find_one_and_update({"party_name": party_name}, {"$push": {"pizza_prefabs": pizza_prefab}},upsert=False)
+        Party.parties_collect.find_one_and_update({"party_name": party_name}, {"$push": {"pizza_prefabs": pizza_prefab}},upsert=True)
 
     @staticmethod
     def remove_pizza_prefab(party_name,prefab_id):
@@ -99,11 +100,16 @@ class Party:
 #pprint(accounts)
 db = Party()
 #print(db.auth("daniel_loo","yeetusmeetus"))
-
+#pizza_list = [{"name":"tyu","toppings":["MUSHROOM"]}]
+#db.create_new_party("lmao",pizza_list)
 #db.create_new_party("daniel's better party")
 #pizza_prefab = {"prefab_id":"lmao prefab","toppings":["fungus"]}
 #db.add_pizza_prefab("daniel's better party",pizza_prefab)
-db.remove_pizza_prefab("daniel's better party","lmao prefab")
+#db.remove_pizza_prefab("daniel's better party","lmao prefab")
+print(db.compute_optimal_pizza("daniel's better party"))
+
+#new_member = {"name":"bob","toppings":["MUSHROOMS"]}
+#db.add_member("daniel's better party",new_member)
 '''
 n_party = db.get_party_json("nithin's party")
 n_party["members"].append("danielle")

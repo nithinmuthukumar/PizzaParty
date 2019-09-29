@@ -21,11 +21,6 @@ class CommandHandler(tornado.web.RequestHandler):
         assert hasattr(Party,cmd_name), "invalid command"
         result = getattr(Party,cmd_name)(*params) #return result to front-end
 
-
-        #send function return value if it isnt null
-        if result == None:
-            return None
-
         msg = tornado.escape.json_encode({"command":cmd_name,"return_value":result})
         self.write(msg)
 
