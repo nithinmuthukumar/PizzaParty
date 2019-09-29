@@ -1,83 +1,131 @@
-import math
+from math import *
 
 # CONSTANTS
 toppings = [line.strip() for line in open("toppings.txt").readlines()]
 
 
 class Person:
-    def __init__(self, slices, is_veg, pizza_type, pizza_name, toppings, crust, restrictions="none", sides="none", drinks="none"):
-        self.slices = slices
+    def __init__(self, is_veg, toppings):
         self.is_veg = is_veg
-        self.pizza_type = pizza_type
-        self.pizza_name = pizza_name
         self.toppings = toppings
-        self.crust = crust
-        self.restrictions = restrictions
-        self.sides = sides
-        self.drinks = drinks
+        
 
 
-def optimize_pizzas_A(people):
+x = Person(True,["olives"])
+y = Person(True,["olives"])
+z = Person(False,["pepperoni"])
+a = Person(False,["pepperoni"])
+lst = [x,y,z,a]
+
+
+
+
+def optimize_pizzas_A(people,slices):
     round_pizza_slices = 0
     build_pizza_slices = 0
-    deep_dish_slices = 0
-
-    round_pizza_types = {}
-    deep_dish_types = {}
-
+    #deep_dish_slices = 0
+    veg_pizzas_num = 0
+    meat_pizzas_num = 0
+    veg_pizzas = []
+    meat_pizzas = []
+    veg_num = []
+    meat_num = []
     for p in people:
-        if p.pizza_type == "ROUND":
-            round_pizza_slices += p.slices
-            if p.pizza_type not in round_pizza_types:
-                round_pizza_slices[p.pizza_type] = p.slices
-            else:
-                round_pizza_slices[p.pizza_type] += p.slices
-
-        elif p.pizza_type == "BUILD":
-            build_pizza_slices += p.slices
-        elif p.pizza_type == "DEEP_DISH":
-            deep_dish_slices += p.slices
-            if p.pizza_type not in deep_dish_slices:
-                deep_dish_types[p.pizza_type] = p.slices
-            else:
-                deep_dish_types[p.pizza_type] += p.slices
-
-    round_pizza_types = sorted(round_pizza_types.items(), key=lambda x: x[1], reverse=True)
-    deep_dish_types = sorted(deep_dish_types.items(), key=lambda x: x[1], reverse=True)
-
-    num_pizzas = math.ceil((round_pizza_slices + deep_dish_slices + build_pizza_slices) / 8)
-
-    round_pizzas = [[] for i in range(math.floor(round_pizza_slices / 8))]
-    build_pizzas = [[] for i in range(math.floor(build_pizza_slices / 8))]
-    deep_dish = [[] for i in range(math.floor(deep_dish_slices / 8))]
-
-    remaining = [len(round_pizzas) * 8 - round_pizza_slices, len(build_pizzas) * 8 - build_pizza_slices,
-                 len(deep_dish_types) * 8 - deep_dish_slices]
-
-    tot_remaining = sum(remaining)
-
-    while tot_remaining > 0:
-        if remaining.index(max(remaining)) == 0:
-            tot_remaining -= 8
-            round_pizzas.append([])
-            remaining[0] = 0
-        elif remaining.index(max(remaining)) == 1:
-            tot_remaining -= 8
-            build_pizzas.append([])
-            remaining[1] = 0
+        visited = False
+        if p.is_veg:
+            veg_pizzas_num += slices
+            for i in range(len(veg_pizzas)):
+                if veg_pizzas[i] == p.toppings:
+                    veg_num[i] += 1
+                    visited = True
+                    break 
+            if not visited:
+                veg_pizzas.append(p.toppings)
+                veg_num.append(1)
         else:
-            tot_remaining -= 8
-            build_pizzas.append([])
-            remaining[2] = 0
+            meat_pizzas_num += slices
+            for i in range(len(meat_pizzas)):
+                if meat_pizzas[i] == p.toppings:
+                    meat_num[i] += 1
+                    visited = True
+                    break
+            if not visited:
+                meat_pizzas.append(p.toppings)
+                meat_num.append(1)
+    for i in veg_num:
+        x = i % 8
+        if x > 4:
+            i += 8-x
+    for i in meat_num:
+        x = i % 8
+        if x > 4:
+            i += 8-x
+            
+    pizza_set = []
+    pizza_set2 = []
+    pizza_loose = []
+    for i in veg_num:
+        if i*slices % 8 == 0 and i*slices >= 8:
+            indx = veg_num.index(i)
+            for i in range(int(i*slices/8)):
+                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx]])
+            del veg_num[indx]
+            del veg_pizzas[indx]
+            
+        elif i*slices > 8:
+            add_num = floor(i*slices/8)
+            indx = veg_num.index(i)
+            for i in range(add_num):
+                pizza_set.append([veg_pizzas[indx],veg_pizzas[indx]])
+            veg_num[indx] -= add_num*8
+    for i in veg_num:
+        if i*veg_num == 4:
+            if len(pizza_set) > 0:
+                indx = veg_num.index(i)
+                if len(pizza_set[-1]) == 1:
+                    pizza_set[-1].append(veg_pizzas[indx])
+                else:
+                    pizza_set.append([veg_pizzas[indx]])
+    if len(veg_pizzas) > 0:
+        if len(veg_pizzas[-1]) == 2:
+            veg_pizzas[-1].append(veg_pizzas[-1][0])
+    for i in range(len(veg_num)):
+        lst = veg_pizzas[i]
+        lst.append(veg_num[i]*slices)
+        pizza_loose.append(lst)
 
-    for i in range(len(round_pizzas)):
-        round_pizzas[i] = round_pizza_types[i][0]
-
-    for i in range(len(deep_dish)):
-        deep_dish[i] = deep_dish_types[i][0]
 
 
+    for i in meat_num:
+        if i*slices % 8 == 0 and i*slices >= 8:
+            indx = meat_num.index(i)
+            for i in range(int(i*slices/8)):
+                pizza_set2.append([meat_pizzas[indx],meat_pizzas[indx]])
+            del meat_num[indx]
+            del meat_pizzas[indx]
+            
+        elif i*slices > 8:
+            add_num = floor(i*slices/8)
+            indx = meat_num.index(i)
+            for i in range(add_num):
+                pizza_set2.append([meat_pizzas[indx],meat_pizzas[indx]])
+            meat_num[indx] -= add_num*8
+    for i in meat_num:
+        if i*meat_num == 4:
+            if len(pizza_set2) > 0:
+                indx = meat_num.index(i)
+                if len(pizza_set2[-1]) == 1:
+                    pizza_set2[-1].append(meat_pizzas[indx])
+                else:
+                    pizza_set2.append([meat_pizzas[indx]])
+    if len(meat_pizzas) > 0:
+        if len(meat_pizzas[-1]) == 2:
+            meat_pizzas[-1].append(meat_pizzas[-1][0])
+    for i in range(len(meat_num)):
+        lst = meat_pizzas[i]
+        lst.append(meat_num[i]*slices)
+        pizza_loose.append(lst)
 
+    return [pizza_set,pizza_set2,pizza_loose]
 
-
-
+print(optimize_pizzas_A(lst,4))
