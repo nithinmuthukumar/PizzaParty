@@ -1,7 +1,7 @@
 from math import *
 
 # CONSTANTS
-toppings = [line.strip() for line in open("toppings.txt").readlines()]
+toppings = [line.strip() for line in open("data/toppings.txt").readlines()]
 
 
 class Person:
@@ -9,17 +9,7 @@ class Person:
         self.is_veg = is_veg
         self.toppings = toppings
         
-
-
-x = Person(True,["olives"])
-y = Person(True,["olives"])
-z = Person(False,["pepperoni"])
-a = Person(False,["pepperoni"])
-lst = [x,y,z,a]
-
-
-
-
+#DOES NOT VERIFY MEAT VS VEGETARIAN
 def optimize_pizzas_A(people,slices):
     round_pizza_slices = 0
     build_pizza_slices = 0
@@ -127,5 +117,18 @@ def optimize_pizzas_A(people,slices):
         pizza_loose.append(lst)
 
     return [pizza_set,pizza_set2,pizza_loose]
+
+
+x = Person(True,["olives"])
+y = Person(True,["olives"])
+z = Person(False,["pepperoni"])
+a = Person(False,["pepperoni"])
+b = Person(False,["pepperoni","olives"])
+lst = [x,y,z,a,b]
+
+
+#add slice number
+#compress down to 2d array
+
 
 print(optimize_pizzas_A(lst,4))
