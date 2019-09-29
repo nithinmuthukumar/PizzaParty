@@ -198,9 +198,14 @@ def optimize_pizzas_A(people,slices):
 
     return pizza_set
 
+'''
+x = Person(["olives"])
+y = Person(["olives"])
+z = Person(["pepperoni"])
+a = Person(["vegetables,pepperoni"])
+b = Person(["pepperoni","olives"])
 
-x = Person(['onions'])
-y = Person(['mushrooms'])
-lst = [x,y]
+lst = [x,y,z,a,b]
 
-print(optimize_pizzas_A(lst,2))
+print(optimize_pizzas_A(lst,4))
+'''
