@@ -19,7 +19,7 @@ class MainHandler(tornado.web.RequestHandler):
 class CreatePartyHandler(tornado.web.RequestHandler):
 
     def get(self):
-        self.write("Create PARTY!!")
+        print(self)
 
 class JoinPartyHandler(tornado.web.RequestHandler):
 
