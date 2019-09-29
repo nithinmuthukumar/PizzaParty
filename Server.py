@@ -14,12 +14,22 @@ class CommandHandler(tornado.web.RequestHandler):
 
     def post(self):
         cmd_json = tornado.escape.json_decode(self.request.body)
-        func_name = cmd_json["command"]
+        cmd_name = cmd_json["command"]
         params = cmd_json["params"]
 
         #execvute command
-        assert hasattr(Party,func_name), "invalid command"
-        getattr(Party,func_name)(*params) #return result to front-end
+        assert hasattr(Party,cmd_name), "invalid command"
+        result = getattr(Party,cmd_name)(*params) #return result to front-end
+
+
+        #send function return value if it isnt null
+        if result == None:
+            return None
+
+        msg = tornado.escape.json_encode({"command":cmd_name,"return_value":result})
+        self.write(msg)
+
+
 
 def make_app():
     return tornado.web.Application([
