@@ -8,5 +8,8 @@ PizzaParty is a mobile app directed towards party planners that tackles the prob
 Sat Arora  
 Aaron Cheng  
 Daniel Liu  
-Nithin Muthukumar  
+Nithin Muthukumar 
+
+
+
 ![Main Menu](https://github.com/nithinmuthukumar/PizzaParty/blob/master/IMG_1049.PNG)
