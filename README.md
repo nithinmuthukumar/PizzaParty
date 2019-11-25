@@ -9,3 +9,5 @@ Sat Arora
 Aaron Cheng  
 Daniel Liu  
 Nithin Muthukumar  
+
+(https://github.com/nithinmuthukumar/PizzaParty/blob/master/IMG_1049.PNG)
